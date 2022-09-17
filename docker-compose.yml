@@ -19,18 +19,13 @@ x-resources: &default-resources
 services:
   # Elasticsearch
   elasticsearch:
-    image: 'docker.elastic.co/elasticsearch/elasticsearch:8.2.0'
+    image: 'docker.elastic.co/elasticsearch/elasticsearch:8.4.1'
 
     container_name: 'elasticsearch'
 
     ports:
       - '9200:9200'
       - '9300:9300'
-
-    networks:
-      default:
-        aliases:
-          - 'es.tixfactory.systems'
 
     logging: *default-logging
 
@@ -43,13 +38,13 @@ services:
 
     volumes:
       - 'tix-factory:/usr/share/elasticsearch/data'
-      - './elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml'
+      - './elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro'
 
     restart: 'always'
 
   # Kibana
   kibana:
-    image: 'docker.elastic.co/kibana/kibana:8.2.0'
+    image: 'docker.elastic.co/kibana/kibana:8.4.1'
 
     container_name: 'kibana'
 
@@ -59,15 +54,34 @@ services:
     ports:
       - '5601:5601'
 
-    networks:
-      default:
-        aliases:
-          - 'logging.tixfactory.systems'
+    logging: *default-logging
+
+    deploy: *default-resources
+
+    volumes:
+      - './kibana.yml:/usr/share/kibana/config/kibana.yml:ro'
+
+    restart: 'always'
+
+  # nginx
+  nginx:
+    image: 'nginx:1.23.1'
+
+    container_name: 'nginx'
+
+    depends_on:
+      - 'kibana'
+
+    ports:
+      - '80:80'
+      - '443:443'
 
     logging: *default-logging
 
+    deploy: *default-resources
+
     volumes:
-      - './kibana.yml:/usr/share/kibana/config/kibana.yml'
+      - './nginx.conf:/etc/nginx/nginx.conf:ro'
 
     restart: 'always'
 
