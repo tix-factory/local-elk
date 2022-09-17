@@ -23,10 +23,6 @@ services:
 
     container_name: 'elasticsearch'
 
-    ports:
-      - '9200:9200'
-      - '9300:9300'
-
     logging: *default-logging
 
     ulimits:
@@ -50,9 +46,6 @@ services:
 
     depends_on:
       - 'elasticsearch'
-
-    ports:
-      - '5601:5601'
 
     logging: *default-logging
 
