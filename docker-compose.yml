@@ -1,0 +1,63 @@
+# docker-compose version
+version: '3.9'
+
+# Default logging configuration
+x-logging: &default-logging
+  driver: 'local'
+  options:
+    max-size: '10m'
+    max-file: 3
+
+# Default machine resources for running containers.
+x-resources: &default-resources
+  resources:
+    limits:
+      # Measured in bytes.
+      memory: '8589934592'
+
+# All the containers to run.
+services:
+  # Elasticsearch
+  elasticsearch:
+    image: 'docker.elastic.co/elasticsearch/elasticsearch:8.2.0'
+
+    container_name: 'elasticsearch'
+
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+
+    networks:
+      default:
+        aliases:
+          - 'es.tixfactory.systems'
+
+    logging: *default-logging
+
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+    deploy: *default-resources
+
+    volumes:
+      - 'tix-factory:/usr/share/elasticsearch/data'
+      - './elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml'
+
+    restart: 'always'
+
+# Ensure all the services in this docker-compose file connect to the tix-factory docker network.
+networks:
+  default:
+    name: 'tix-factory'
+    external: true
+
+# Persistent storage on the device for the containers.
+volumes:
+  tix-factory:
+    driver: 'local'
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: 'G:\Docker\volumes\tix-factory'

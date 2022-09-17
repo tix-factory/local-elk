@@ -1,0 +1,19 @@
+# The name of the elasticsearch cluster.
+cluster.name: 'tix-factory'
+
+# The host name to run elasticsearch under.
+network.host: 'elasticsearch'
+
+# Tell elasticsearch we are running on exactly one server.
+discovery.type: 'single-node'
+
+# Disable security, since we're running on localhost, and this is a single-server arcitecture.
+xpack.security.enabled: false
+
+# Sorry me, I forgot why I put this here.
+# Wasn't documented in 2020.
+bootstrap.memory_lock: true
+
+# Disable elasticsearch from trying to download the GeoIP database, which it does by default.
+# This because I don't use any geoip features, and the request is failing.
+ingest.geoip.downloader.enabled: false
