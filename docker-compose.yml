@@ -120,6 +120,26 @@ services:
 
     restart: 'always'
 
+  # Grafana
+  grafana:
+    image: 'grafana/grafana:9.1.5'
+
+    container_name: 'grafana'
+
+    depends_on:
+      - 'prometheus'
+
+    logging: *default-logging
+
+    deploy: *default-resources
+
+    volumes:
+      - 'tix-factory:/var/lib/grafana'
+      - './grafana/grafana.ini:/etc/grafana/grafana.ini'
+      - './grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml'
+
+    restart: 'always'
+
 # Ensure all the services in this docker-compose file connect to the tix-factory docker network.
 networks:
   default:

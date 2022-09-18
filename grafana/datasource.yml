@@ -1,0 +1,12 @@
+# https://grafana.com/docs/grafana/latest/administration/provisioning/
+apiVersion: 1
+
+datasources:
+  - name: 'Prometheus'
+    type: 'prometheus'
+    access: 'proxy'
+    orgId: 1
+    url: 'http://prometheus:9090'
+    isDefault: true
+    editable: false
+    version: 1
