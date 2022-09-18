@@ -1,0 +1,3 @@
+# Ignore the sites until their SSL certificates are available.
+# The sites-available directory is what is actually injected into nginx.
+/sites-available/

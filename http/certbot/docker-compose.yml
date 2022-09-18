@@ -1,0 +1,19 @@
+# docker-compose version
+version: '3.9'
+
+# Docker images required to renew certificates.
+services:
+  certbot:
+    image: 'certbot/certbot:v1.30.0'
+
+    container_name: 'certbot'
+
+    volumes:
+      - '../../secrets/certbot/letsencrypt:/etc/letsencrypt'
+      - '../../secrets/certbot/tmp:/tmp/letsencrypt'
+
+# Ensure all the services in this docker-compose file connect to the tix-factory docker network.
+networks:
+  default:
+    name: 'tix-factory'
+    external: true
