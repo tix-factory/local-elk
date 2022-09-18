@@ -33,7 +33,7 @@ services:
 
     volumes:
       - 'tix-factory:/usr/share/elasticsearch/data'
-      - './elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro'
+      - './logs/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro'
 
     restart: 'always'
 
@@ -54,7 +54,7 @@ services:
     deploy: *default-resources
 
     volumes:
-      - './logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro'
+      - './logs/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro'
 
     restart: 'always'
 
@@ -72,7 +72,7 @@ services:
     deploy: *default-resources
 
     volumes:
-      - './kibana.yml:/usr/share/kibana/config/kibana.yml:ro'
+      - './logs/kibana.yml:/usr/share/kibana/config/kibana.yml:ro'
 
     restart: 'always'
 
@@ -94,7 +94,7 @@ services:
     deploy: *default-resources
 
     volumes:
-      - './nginx.conf:/etc/nginx/nginx.conf:ro'
+      - './http/nginx.conf:/etc/nginx/nginx.conf:ro'
 
     restart: 'always'
 
@@ -115,7 +115,7 @@ services:
 
     volumes:
       - 'tix-factory:/prometheus'
-      - './prometheus.yml:/etc/prometheus/prometheus.yml:ro'
+      - './metrics/prometheus.yml:/etc/prometheus/prometheus.yml:ro'
       - './secrets/prometheus-bearer-token.txt:/etc/prometheus/prometheus-bearer-token.txt:ro'
 
     restart: 'always'
@@ -135,8 +135,8 @@ services:
 
     volumes:
       - 'tix-factory:/var/lib/grafana'
-      - './grafana/grafana.ini:/etc/grafana/grafana.ini'
-      - './grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml'
+      - './metrics/grafana.ini:/etc/grafana/grafana.ini'
+      - './metrics/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml'
 
     restart: 'always'
 
