@@ -18,6 +18,7 @@ Commands are intended to be run in the cloned repository root.
 1. Move the `.wslconfig` file to `%USERPROFILE%`, and run `wsl --shutdown`, then use Docker Desktop to restart WSL2, in the troubleshoot panel.
 2. Run `docker network create tix-factory`
 3. Run `docker-compose up -d`
+4. Run `[guid]::NewGuid().ToString() | Out-File -FilePath .\secrets\prometheus-bearer-token.txt -NoNewline -Encoding UTF8`
 
 ## Kibana
 

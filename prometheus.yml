@@ -1,0 +1,11 @@
+# https://prometheus.io/docs/prometheus/latest/configuration/configuration/
+scrape_configs:
+  - job_name: 'tix-factory-prometheus'
+
+    # The bearer token sent in the outbound requests to scrape the metrics.
+    bearer_token_file: '/etc/prometheus/prometheus-bearer-token.txt'
+
+    # These are the host names prometheus will scrape.
+    static_configs:
+      - targets:
+          - 'grafana'

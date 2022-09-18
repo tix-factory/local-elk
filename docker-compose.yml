@@ -98,6 +98,28 @@ services:
 
     restart: 'always'
 
+  # Prometheus
+  prometheus:
+    image: 'prom/prometheus:v2.37.1'
+
+    user: 'root'
+
+    container_name: 'prometheus'
+
+    depends_on:
+      - 'logstash'
+
+    logging: *default-logging
+
+    deploy: *default-resources
+
+    volumes:
+      - 'tix-factory:/prometheus'
+      - './prometheus.yml:/etc/prometheus/prometheus.yml:ro'
+      - './secrets/prometheus-bearer-token.txt:/etc/prometheus/prometheus-bearer-token.txt:ro'
+
+    restart: 'always'
+
 # Ensure all the services in this docker-compose file connect to the tix-factory docker network.
 networks:
   default:
