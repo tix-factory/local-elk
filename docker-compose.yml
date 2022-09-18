@@ -94,7 +94,7 @@ services:
     deploy: *default-resources
 
     volumes:
-      - './http/nginx.conf:/etc/nginx/nginx.conf:ro'
+      - './http:/etc/nginx:ro'
 
     restart: 'always'
 
