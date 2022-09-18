@@ -3,10 +3,9 @@ version: '3.9'
 
 # Default logging configuration
 x-logging: &default-logging
-  driver: 'local'
+  driver: 'gelf'
   options:
-    max-size: '10m'
-    max-file: 3
+    gelf-address: 'udp://127.0.0.1:12201'
 
 # Default machine resources for running containers.
 x-resources: &default-resources
@@ -38,6 +37,28 @@ services:
 
     restart: 'always'
 
+  # logstash
+  logstash:
+    image: 'docker.elastic.co/logstash/logstash:8.4.1'
+
+    container_name: 'logstash'
+
+    depends_on:
+      - 'elasticsearch'
+
+    ports:
+      - '12201:12201/udp'
+      - '5044:5044'
+
+    logging: *default-logging
+
+    deploy: *default-resources
+
+    volumes:
+      - './logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro'
+
+    restart: 'always'
+
   # Kibana
   kibana:
     image: 'docker.elastic.co/kibana/kibana:8.4.1'
@@ -45,7 +66,7 @@ services:
     container_name: 'kibana'
 
     depends_on:
-      - 'elasticsearch'
+      - 'logstash'
 
     logging: *default-logging
 
@@ -63,7 +84,7 @@ services:
     container_name: 'nginx'
 
     depends_on:
-      - 'kibana'
+      - 'logstash'
 
     ports:
       - '80:80'

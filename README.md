@@ -18,3 +18,9 @@ Commands are intended to be run in the cloned repository root.
 1. Move the `.wslconfig` file to `%USERPROFILE%`, and run `wsl --shutdown`, then use Docker Desktop to restart WSL2, in the troubleshoot panel.
 2. Run `docker network create tix-factory`
 3. Run `docker-compose up -d`
+
+## Kibana
+
+Configure the index in kibana by going to `Stack Management` -> `Data Views`.
+
+Create a data view for the `logstash` index to visualize the logs from all the docker containers.
