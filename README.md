@@ -29,3 +29,5 @@ Create a data view for the `logstash` index to visualize the logs from all the d
 ## Grafana
 
 Log into grafana (username: `admin`, password: `admin`), and set the email + username + password.
+
+To add more hosts for prometheus to scrape for metrics, update the [prometheus.yml](./metrics/prometheus.yml) `targets`.
