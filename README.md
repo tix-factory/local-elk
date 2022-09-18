@@ -4,6 +4,8 @@ The repository containing everything you need to run the ELK (Elasticsearch, Log
 
 This repository was created with the intention of running ELK on Windows.
 
+BONUS: Also runs prometheus, grafana, and ties it together with nginx.
+
 # Setup
 
 ## Prerequisites
