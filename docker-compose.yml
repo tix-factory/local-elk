@@ -48,7 +48,6 @@ services:
 
     ports:
       - '12201:12201/udp'
-      - '5044:5044'
 
     logging: *default-logging
 
