@@ -12,6 +12,8 @@ server.host: 'kibana'
 # This setting cannot end in a slash.
 #server.basePath: ""
 
+server.publicBaseUrl: 'https://logging.tixfactory.systems'
+
 # Specifies whether Kibana should rewrite requests that are prefixed with
 # `server.basePath` or require that they are rewritten by your reverse proxy.
 # This setting was effectively always `false` before Kibana 6.3 and will
