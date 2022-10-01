@@ -1,0 +1,160 @@
+# docker-compose version
+version: '3.9'
+
+# Default logging configuration
+x-logging: &default-logging
+  driver: 'gelf'
+  options:
+    gelf-address: 'udp://127.0.0.1:12201'
+
+# Default machine resources for running containers.
+x-resources: &default-resources
+  resources:
+    limits:
+      # Measured in bytes.
+      memory: '8589934592'
+
+# All the containers to run.
+services:
+  # Elasticsearch
+  elasticsearch:
+    image: 'docker.elastic.co/elasticsearch/elasticsearch:8.4.1'
+
+    container_name: 'elasticsearch'
+
+    logging: *default-logging
+
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+    deploy: *default-resources
+
+    volumes:
+      - 'tix-factory:/usr/share/elasticsearch/data'
+      - './logs/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro'
+
+    restart: 'always'
+
+  # logstash
+  logstash:
+    image: 'docker.elastic.co/logstash/logstash:8.4.1'
+
+    container_name: 'logstash'
+
+    depends_on:
+      - 'elasticsearch'
+
+    ports:
+      - '12201:12201/udp'
+
+    logging: *default-logging
+
+    deploy: *default-resources
+
+    volumes:
+      - './logs/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro'
+
+    restart: 'always'
+
+  # Kibana
+  kibana:
+    image: 'docker.elastic.co/kibana/kibana:8.4.1'
+
+    container_name: 'kibana'
+
+    depends_on:
+      - 'logstash'
+
+    logging: *default-logging
+
+    deploy: *default-resources
+
+    volumes:
+      - './logs/kibana.yml:/usr/share/kibana/config/kibana.yml:ro'
+
+    restart: 'always'
+
+  # nginx
+  nginx:
+    image: 'nginx:1.23.1'
+
+    container_name: 'nginx'
+
+    depends_on:
+      - 'logstash'
+
+    ports:
+      - '80:80'
+      - '443:443'
+
+    logging: *default-logging
+
+    deploy: *default-resources
+
+    volumes:
+      - './http/nginx.conf:/etc/nginx/nginx.conf:ro'
+      - './http/sites-available:/etc/nginx/sites-available:ro'
+      - './secrets/certbot/tmp:/var/www/certbot:ro'
+      - './secrets/certbot/letsencrypt:/etc/letsencrypt:ro'
+      - './secrets/.htpasswd:/etc/apache2/.htpasswd:ro'
+
+    restart: 'always'
+
+  # Prometheus
+  prometheus:
+    image: 'prom/prometheus:v2.37.1'
+
+    user: 'root'
+
+    container_name: 'prometheus'
+
+    depends_on:
+      - 'logstash'
+
+    logging: *default-logging
+
+    deploy: *default-resources
+
+    volumes:
+      - 'tix-factory:/prometheus'
+      - './metrics/prometheus.yml:/etc/prometheus/prometheus.yml:ro'
+      - './secrets/prometheus-bearer-token.txt:/etc/prometheus/prometheus-bearer-token.txt:ro'
+
+    restart: 'always'
+
+  # Grafana
+  grafana:
+    image: 'grafana/grafana:9.1.5'
+
+    container_name: 'grafana'
+
+    depends_on:
+      - 'prometheus'
+
+    logging: *default-logging
+
+    deploy: *default-resources
+
+    volumes:
+      - 'tix-factory:/var/lib/grafana'
+      - './metrics/grafana.ini:/etc/grafana/grafana.ini'
+      - './metrics/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml'
+
+    restart: 'always'
+
+# Ensure all the services in this docker-compose file connect to the tix-factory docker network.
+networks:
+  default:
+    name: 'tix-factory'
+    external: true
+
+# Persistent storage on the device for the containers.
+volumes:
+  tix-factory:
+    driver: 'local'
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: 'G:\Docker\volumes\tix-factory'
