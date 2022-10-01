@@ -98,6 +98,7 @@ services:
       - './http/sites-available:/etc/nginx/sites-available:ro'
       - './secrets/certbot/tmp:/var/www/certbot:ro'
       - './secrets/certbot/letsencrypt:/etc/letsencrypt:ro'
+      - './secrets/.htpasswd:/etc/apache2/.htpasswd:ro'
 
     restart: 'always'
 

@@ -1,9 +1,11 @@
-import { mkdir, readdir, readFile, writeFile } from 'fs';
+import { access, mkdir, readdir, readFile, writeFile } from 'fs';
 import { spawn } from 'child_process';
+import { getRandomValues } from 'crypto';
 import { basename } from 'path';
 
 const sitesDirectory = '../sites-enabled';
-const certificatesDirectory = '../../secrets/certbot/letsencrypt/live';
+const secretsDirectory = '../../secrets';
+const certificatesDirectory = secretsDirectory + '/certbot/letsencrypt/live';
 const email = process.argv[2];
 const staging = false;
 
@@ -125,9 +127,53 @@ const renewCertificate = (domain) => {
   });
 };
 
+function uuidv4() {
+  return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
+    (c ^ (getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))).toString(16)
+  );
+}
+
+const generateAuthenticationFile = (username) => {
+  return new Promise((resolve, reject) => {
+    const authenticationFile = secretsDirectory + '/.htpasswd';
+    access(authenticationFile, (err) => {
+      if (err) {
+        const password = uuidv4();
+        const hashedPassword = spawn('openssl', ['passwd', '-5', password]);
+
+        hashedPassword.stdout.on('data', (data) => {
+          writeFile(
+            authenticationFile,
+            `${username}:${data.toString()}`,
+            (err) => {
+              if (err) {
+                reject(err);
+              } else {
+                console.log(
+                  authenticationFile,
+                  `written (password: ${password})`
+                );
+                resolve();
+              }
+            }
+          );
+        });
+
+        hashedPassword.stderr.on('data', (data) => {
+          reject(data.toString());
+        });
+      } else {
+        console.log(authenticationFile, 'already exists');
+        resolve();
+      }
+    });
+  });
+};
+
 if (email) {
   getDomains()
     .then(async (domains) => {
+      await generateAuthenticationFile(email);
       await createDirectory(certificatesDirectory);
 
       for (let i = 0; i < domains.length; i++) {

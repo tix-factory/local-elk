@@ -12,6 +12,7 @@ BONUS: Also runs prometheus, grafana, and ties it together with nginx.
 
 1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
 2. Install [WSL2](https://aka.ms/wsl2kernel), and run `wsl --set-default-version 2`
+3. Ensure `openssl` exists in the `PATH` environment variable (see: [stackoverflow](https://stackoverflow.com/a/51757939/1663648))
 
 ## Repository Setup
 
@@ -22,7 +23,8 @@ Commands are intended to be run in the cloned repository root.
 3. Run `[guid]::NewGuid().ToString() | Out-File -FilePath .\secrets\prometheus-bearer-token.txt -NoNewline -Encoding UTF8`
 4. Run `docker-compose up -d`
 5. Run `node index.js { email }` in the [http/certbot](./http/certbot) directory. Recommended to setup a recurring task for this one.
-6. Run `docker-compose restart nginx`
+6. Save the password output by this command, it will be used to connect to kibana.
+7. Run `docker-compose restart nginx`
 
 ## Kibana
 
