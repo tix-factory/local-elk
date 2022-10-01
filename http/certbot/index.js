@@ -44,15 +44,10 @@ const enableSSL = (domain) => {
           `ssl_certificate /etc/letsencrypt/live/${domainDirectory}/fullchain.pem;` +
           `\n  ssl_certificate_key /etc/letsencrypt/live/${domainDirectory}/privkey.pem;`;
 
-        const redirectBlock = `server {\n  listen 80;\n  server_name ${domain};\n  return 301 https://$host$request_uri;\n}`;
-
-        const updatedConf =
-          redirectBlock +
-          '\n\n' +
-          conf
-            .toString()
-            .replace('listen 443', 'listen 443 ssl')
-            .replace(/# SSL.+/, sslBlock);
+        const updatedConf = conf
+          .toString()
+          .replace('listen 443', 'listen 443 ssl')
+          .replace(/# SSL.+/, sslBlock);
 
         writeFile(
           `${sitesDirectory}/../sites-available/${domain}.conf`,
