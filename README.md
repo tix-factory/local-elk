@@ -41,7 +41,7 @@ Commands are intended to be run in the cloned repository root.
 
 Configure the index in kibana by going to `Stack Management` -> `Data Views`.
 
-Create a data view for the `logstash` index to visualize the logs from all the docker containers.
+Create a data view for the `logstash-*` index to visualize the logs from all the docker containers.
 
 ## Grafana
 
