@@ -9,3 +9,4 @@ scrape_configs:
     static_configs:
       - targets:
           - 'grafana'
+          - 'nginx-prometheus-exporter:9113'
