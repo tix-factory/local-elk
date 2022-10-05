@@ -102,6 +102,23 @@ services:
 
     restart: 'always'
 
+  nginx-prometheus-exporter:
+    image: 'nginx/nginx-prometheus-exporter:0.11.0'
+
+    container_name: 'nginx-prometheus-exporter'
+
+    depends_on:
+      - 'nginx'
+
+    logging: *default-logging
+
+    deploy: *default-resources
+
+    command:
+      - '-nginx.scrape-uri=http://nginx:8080/stub_status'
+
+    restart: 'always'
+
   # Prometheus
   prometheus:
     image: 'prom/prometheus:v2.37.1'
@@ -112,6 +129,7 @@ services:
 
     depends_on:
       - 'logstash'
+      - 'nginx-prometheus-exporter'
 
     logging: *default-logging
 
