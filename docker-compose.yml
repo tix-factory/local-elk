@@ -144,6 +144,48 @@ services:
 
     restart: 'always'
 
+  # Kafaka
+  zookeeper:
+    image: 'bitnami/zookeeper:3.7.1'
+
+    container_name: 'zookeeper'
+
+    depends_on:
+      - 'logstash'
+
+    logging: *default-logging
+
+    deploy: *default-resources
+
+    environment:
+      - 'ALLOW_ANONYMOUS_LOGIN=yes'
+
+    volumes:
+      - 'tix-factory:/bitnami/zookeeper'
+
+    restart: 'always'
+
+  kafka:
+    image: 'bitnami/kafka:3.2.3'
+
+    container_name: 'kafka'
+
+    depends_on:
+      - 'zookeeper'
+
+    logging: *default-logging
+
+    deploy: *default-resources
+
+    environment:
+      - 'KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181'
+      - 'ALLOW_PLAINTEXT_LISTENER=yes'
+
+    volumes:
+      - 'tix-factory:/bitnami/kafka'
+
+    restart: 'always'
+
 # Ensure all the services in this docker-compose file connect to the tix-factory docker network.
 networks:
   default:
