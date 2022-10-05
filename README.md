@@ -1,10 +1,21 @@
 # Local ELK
 
-The repository containing everything you need to run the ELK (Elasticsearch, Logstash, Kibana) stack, locally.
+This repository contains everything you need to run a local single server architecture with visibility (logs, metrics, etc).
 
-This repository was created with the intention of running ELK on Windows.
+This repository was created with the intention of running all of this in docker on Windows.
 
-BONUS: Also runs prometheus, grafana, and ties it together with nginx.
+## Application Stack
+
+This is a list of all the applications you will run with this template, and their purposes:
+
+- [elasticsearch](https://www.elastic.co/elasticsearch/): Log storage
+- [logstash](https://www.elastic.co/logstash/): Collect logs from docker containers
+- [kibana](https://www.elastic.co/kibana/): Logs visualizer
+- [grafana](https://grafana.com/): Charts
+- [prometheus](https://prometheus.io/): Metrics collection
+- [nginx](https://www.nginx.com): HTTP Server
+- [certbot](https://certbot.eff.org/): TLS certificate renewals
+- [kafka](https://kafka.apache.org): Event stream
 
 # Setup
 
@@ -37,3 +48,5 @@ Create a data view for the `logstash` index to visualize the logs from all the d
 Log into grafana (username: `admin`, password: `admin`), and set the email + username + password.
 
 To add more hosts for prometheus to scrape for metrics, update the [prometheus.yml](./metrics/prometheus.yml) `targets`.
+
+Navigate to the plugins page, search for [Kafka](https://grafana.com/grafana/plugins/hamedkarbasi93-kafka-datasource/), and install it. The kafka server is `kafka:9092`.
