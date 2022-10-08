@@ -14,7 +14,7 @@ datasources:
   - name: 'Logs'
     type: 'elasticsearch'
     access: 'proxy'
-    database: '[logstash-]YYYY.MM.DD'
+    database: '[logstash-]YYYY-MM-DD'
     url: 'http://elasticsearch:9200'
     jsonData:
       interval: 'Daily'
