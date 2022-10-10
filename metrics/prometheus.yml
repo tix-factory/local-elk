@@ -5,8 +5,18 @@ scrape_configs:
     # The bearer token sent in the outbound requests to scrape the metrics.
     bearer_token_file: '/etc/prometheus/prometheus-bearer-token.txt'
 
+    # For rate(1m) to work this cannot be higher than 30 seconds.
+    scrape_interval: 15s
+
     # These are the host names prometheus will scrape.
     static_configs:
       - targets:
+          # Tix Factory targets
           - 'grafana'
           - 'nginx-prometheus-exporter:9113'
+
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: 'instance'
+        regex: '([^:]+)(:[0-9]+)?'
+        replacement: '${1}'
