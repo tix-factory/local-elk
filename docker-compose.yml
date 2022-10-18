@@ -32,7 +32,7 @@ services:
     deploy: *default-resources
 
     volumes:
-      - 'tix-factory:/usr/share/elasticsearch/data'
+      - 'tix-factory-elasticsearch:/usr/share/elasticsearch/data'
       - './logs/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro'
 
     restart: 'always'
@@ -136,7 +136,7 @@ services:
     deploy: *default-resources
 
     volumes:
-      - 'tix-factory:/prometheus'
+      - 'tix-factory-prometheus:/prometheus'
       - './metrics/prometheus.yml:/etc/prometheus/prometheus.yml:ro'
       - './secrets/prometheus-bearer-token.txt:/etc/prometheus/prometheus-bearer-token.txt:ro'
 
@@ -156,7 +156,7 @@ services:
     deploy: *default-resources
 
     volumes:
-      - 'tix-factory:/var/lib/grafana'
+      - 'tix-factory-grafana:/var/lib/grafana'
       - './metrics/grafana.ini:/etc/grafana/grafana.ini:ro'
       - './metrics/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml:ro'
 
@@ -181,7 +181,7 @@ services:
     deploy: *default-resources
 
     volumes:
-      - 'tix-factory:/var/lib/rabbitmq'
+      - 'tix-factory-rabbitmq:/var/lib/rabbitmq'
 
     restart: 'always'
 
@@ -193,9 +193,30 @@ networks:
 
 # Persistent storage on the device for the containers.
 volumes:
-  tix-factory:
+  tix-factory-elasticsearch:
     driver: 'local'
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: 'G:\Docker\volumes\tix-factory'
+      device: 'G:\Docker\volumes\tix-factory\elasticsearch'
+
+  tix-factory-prometheus:
+    driver: 'local'
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: 'G:\Docker\volumes\tix-factory\prometheus'
+
+  tix-factory-grafana:
+    driver: 'local'
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: 'G:\Docker\volumes\tix-factory\grafana'
+
+  tix-factory-rabbitmq:
+    driver: 'local'
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: 'G:\Docker\volumes\tix-factory\rabbitmq'
