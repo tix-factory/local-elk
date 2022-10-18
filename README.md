@@ -8,14 +8,14 @@ This repository was created with the intention of running all of this in docker 
 
 This is a list of all the applications you will run with this template, and their purposes:
 
-- [elasticsearch](https://www.elastic.co/elasticsearch/): Log storage
+- [ElasticSearch](https://www.elastic.co/elasticsearch/): Log storage
 - [logstash](https://www.elastic.co/logstash/): Collect logs from docker containers
-- [kibana](https://www.elastic.co/kibana/): Logs visualizer
-- [grafana](https://grafana.com/): Charts
-- [prometheus](https://prometheus.io/): Metrics collection
+- [Kibana](https://www.elastic.co/kibana/): Logs visualizer
+- [Grafana](https://grafana.com/): Charts
+- [Prometheus](https://prometheus.io/): Metrics collection
 - [nginx](https://www.nginx.com): HTTP Server
 - [certbot](https://certbot.eff.org/): TLS certificate renewals
-- [kafka](https://kafka.apache.org): Event stream
+- [RabbitMQ](https://www.rabbitmq.com/): Message Queues
 
 # Setup
 
