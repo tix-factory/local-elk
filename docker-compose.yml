@@ -32,7 +32,7 @@ services:
     deploy: *default-resources
 
     volumes:
-      - 'tix-factory:/usr/share/elasticsearch/data'
+      - 'tix-factory-elasticsearch:/usr/share/elasticsearch/data'
       - './logs/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro'
 
     restart: 'always'
@@ -136,7 +136,7 @@ services:
     deploy: *default-resources
 
     volumes:
-      - 'tix-factory:/prometheus'
+      - 'tix-factory-prometheus:/prometheus'
       - './metrics/prometheus.yml:/etc/prometheus/prometheus.yml:ro'
       - './secrets/prometheus-bearer-token.txt:/etc/prometheus/prometheus-bearer-token.txt:ro'
 
@@ -156,51 +156,32 @@ services:
     deploy: *default-resources
 
     volumes:
-      - 'tix-factory:/var/lib/grafana'
+      - 'tix-factory-grafana:/var/lib/grafana'
       - './metrics/grafana.ini:/etc/grafana/grafana.ini:ro'
       - './metrics/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml:ro'
 
     restart: 'always'
 
-  # Kafaka
-  zookeeper:
-    image: 'bitnami/zookeeper:3.7.1'
+  # RabbitMQ
+  rabbitmq:
+    image: 'rabbitmq:3.11.1-management'
 
-    container_name: 'zookeeper'
+    container_name: 'rabbitmq'
+
+    hostname: 'rabbitmq'
 
     depends_on:
       - 'logstash'
 
-    logging: *default-logging
-
-    deploy: *default-resources
-
-    environment:
-      - 'ALLOW_ANONYMOUS_LOGIN=yes'
-
-    volumes:
-      - 'tix-factory:/bitnami/zookeeper'
-
-    restart: 'always'
-
-  kafka:
-    image: 'bitnami/kafka:3.2.3'
-
-    container_name: 'kafka'
-
-    depends_on:
-      - 'zookeeper'
+    ports:
+      - '15672:15672'
 
     logging: *default-logging
 
     deploy: *default-resources
 
-    environment:
-      - 'KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181'
-      - 'ALLOW_PLAINTEXT_LISTENER=yes'
-
     volumes:
-      - 'tix-factory:/bitnami/kafka'
+      - 'tix-factory-rabbitmq:/var/lib/rabbitmq'
 
     restart: 'always'
 
@@ -212,9 +193,30 @@ networks:
 
 # Persistent storage on the device for the containers.
 volumes:
-  tix-factory:
+  tix-factory-elasticsearch:
     driver: 'local'
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: 'G:\Docker\volumes\tix-factory'
+      device: 'G:\Docker\volumes\tix-factory\elasticsearch'
+
+  tix-factory-prometheus:
+    driver: 'local'
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: 'G:\Docker\volumes\tix-factory\prometheus'
+
+  tix-factory-grafana:
+    driver: 'local'
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: 'G:\Docker\volumes\tix-factory\grafana'
+
+  tix-factory-rabbitmq:
+    driver: 'local'
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: 'G:\Docker\volumes\tix-factory\rabbitmq'
