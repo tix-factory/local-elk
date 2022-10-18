@@ -162,45 +162,26 @@ services:
 
     restart: 'always'
 
-  # Kafaka
-  zookeeper:
-    image: 'bitnami/zookeeper:3.7.1'
+  # RabbitMQ
+  rabbitmq:
+    image: 'rabbitmq:3.11.1-management'
 
-    container_name: 'zookeeper'
+    container_name: 'rabbitmq'
+
+    hostname: 'rabbitmq'
 
     depends_on:
       - 'logstash'
 
-    logging: *default-logging
-
-    deploy: *default-resources
-
-    environment:
-      - 'ALLOW_ANONYMOUS_LOGIN=yes'
-
-    volumes:
-      - 'tix-factory:/bitnami/zookeeper'
-
-    restart: 'always'
-
-  kafka:
-    image: 'bitnami/kafka:3.2.3'
-
-    container_name: 'kafka'
-
-    depends_on:
-      - 'zookeeper'
+    ports:
+      - '15672:15672'
 
     logging: *default-logging
 
     deploy: *default-resources
 
-    environment:
-      - 'KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181'
-      - 'ALLOW_PLAINTEXT_LISTENER=yes'
-
     volumes:
-      - 'tix-factory:/bitnami/kafka'
+      - 'tix-factory:/var/lib/rabbitmq'
 
     restart: 'always'
 
