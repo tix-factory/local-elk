@@ -14,6 +14,7 @@ scrape_configs:
           # Tix Factory targets
           - 'grafana'
           - 'nginx-prometheus-exporter:9113'
+          - 'rabbitmq:15692'
 
     relabel_configs:
       - source_labels: [__address__]
